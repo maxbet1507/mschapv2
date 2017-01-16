@@ -2,7 +2,7 @@ package mschapv2
 
 import "github.com/pkg/errors"
 
-// HashNtPasswordHash is defined https://tools.ietf.org/html/rfc2759#section-8.4
+// HashNtPasswordHash implements https://tools.ietf.org/html/rfc2759#section-8.4
 //
 //    HashNtPasswordHash(
 //    IN  16-octet PasswordHash,

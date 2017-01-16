@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// GenerateAuthenticatorResponse is defined https://tools.ietf.org/html/rfc2759#section-8.7
+// GenerateAuthenticatorResponse implements https://tools.ietf.org/html/rfc2759#section-8.7
 //
 //    GenerateAuthenticatorResponse(
 //    IN  0-to-256-unicode-char Password,

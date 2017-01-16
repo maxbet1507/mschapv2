@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/md4"
 )
 
-// MSCHAPv2 contains hash.Hash instances.
+// MSCHAPv2 implements https://tools.ietf.org/html/rfc2759
 type MSCHAPv2 struct {
 	Err  error
 	md4  hash.Hash

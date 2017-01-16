@@ -2,7 +2,7 @@ package mschapv2
 
 import "github.com/pkg/errors"
 
-// ChallengeResponse is defined https://tools.ietf.org/html/rfc2759#section-8.5
+// ChallengeResponse implements https://tools.ietf.org/html/rfc2759#section-8.5
 //
 //    ChallengeResponse(
 //    IN  8-octet  Challenge,

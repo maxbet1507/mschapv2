@@ -2,7 +2,7 @@ package mschapv2
 
 import "github.com/pkg/errors"
 
-// GenerateNTResponse is defined https://tools.ietf.org/html/rfc2759#section-8.1
+// GenerateNTResponse implements https://tools.ietf.org/html/rfc2759#section-8.1
 //
 //    GenerateNTResponse(
 //    IN  16-octet              AuthenticatorChallenge,

@@ -2,7 +2,7 @@ package mschapv2
 
 import "github.com/pkg/errors"
 
-// ChallengeHash is defined https://tools.ietf.org/html/rfc2759#section-8.2
+// ChallengeHash implements https://tools.ietf.org/html/rfc2759#section-8.2
 //
 //    ChallengeHash(
 //    IN 16-octet               PeerChallenge,

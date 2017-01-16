@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// CheckAuthenticatorResponse is defined https://tools.ietf.org/html/rfc2759#section-8.8
+// CheckAuthenticatorResponse implements https://tools.ietf.org/html/rfc2759#section-8.8
 //
 //    CheckAuthenticatorResponse(
 //    IN  0-to-256-unicode-char Password,

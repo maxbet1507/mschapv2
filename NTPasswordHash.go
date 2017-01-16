@@ -2,7 +2,7 @@ package mschapv2
 
 import "github.com/pkg/errors"
 
-// NtPasswordHash is defined https://tools.ietf.org/html/rfc2759#section-8.3
+// NtPasswordHash implements https://tools.ietf.org/html/rfc2759#section-8.3
 //
 //    NtPasswordHash(
 //    IN  0-to-256-unicode-char Password,

@@ -57,7 +57,7 @@ func makeDesParityKey(key []byte) []byte {
 	return pkey
 }
 
-// DesEncrypt is defined https://tools.ietf.org/html/rfc2759#section-8.6
+// DesEncrypt implements https://tools.ietf.org/html/rfc2759#section-8.6
 //
 //    DesEncrypt(
 //    IN  8-octet Clear,

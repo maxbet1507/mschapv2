@@ -1,5 +1,7 @@
 package mschapv2
 
+import "github.com/pkg/errors"
+
 // ChallengeHash is defined https://tools.ietf.org/html/rfc2759#section-8.2
 //
 //    ChallengeHash(
@@ -31,10 +33,16 @@ package mschapv2
 //       memcpy(Challenge, Digest, 8)
 //    }
 //
-func (s *MSCHAPv2) ChallengeHash(PeerChallenge, AuthenticatorChallenge, UserName, Challege []byte) error {
+func (s *MSCHAPv2) ChallengeHash(PeerChallenge, AuthenticatorChallenge, UserName, Challege []byte) {
+	if s.Err != nil {
+		return
+	}
+
 	s.sha1reset()
 	s.sha1write(PeerChallenge[:16])
 	s.sha1write(AuthenticatorChallenge[:16])
 	s.sha1write(UserName)
-	return s.sha1finish(Challege)
+	s.sha1finish(Challege)
+
+	s.Err = errors.Wrap(s.Err, "ChallengeHash")
 }

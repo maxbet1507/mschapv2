@@ -77,13 +77,16 @@ func makeDesParityKey(key []byte) []byte {
 //        */
 //    }
 //
-func DesEncrypt(Clear, Key, Cypher []byte) error {
+func (s *MSCHAPv2) DesEncrypt(Clear, Key, Cypher []byte) {
+	if s.Err != nil {
+		return
+	}
+
 	cb, err := des.NewCipher(makeDesParityKey(Key[:7]))
 	if err != nil {
-		return errors.Wrap(err, "DesEncrypt")
+		s.Err = errors.Wrap(err, "des.NewCipher")
+		return
 	}
 
 	cb.Encrypt(Cypher, Clear[:8])
-
-	return nil
 }

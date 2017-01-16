@@ -1,5 +1,7 @@
 package mschapv2
 
+import "github.com/pkg/errors"
+
 // NtPasswordHash is defined https://tools.ietf.org/html/rfc2759#section-8.3
 //
 //    NtPasswordHash(
@@ -13,8 +15,14 @@ package mschapv2
 //        */
 //    }
 //
-func (s *MSCHAPv2) NtPasswordHash(Password, PasswordHash []byte) error {
+func (s *MSCHAPv2) NtPasswordHash(Password, PasswordHash []byte) {
+	if s.Err != nil {
+		return
+	}
+
 	s.md4reset()
 	s.md4write(Password)
-	return s.md4finish(PasswordHash)
+	s.md4finish(PasswordHash)
+
+	s.Err = errors.Wrap(s.Err, "NtPasswordHash")
 }

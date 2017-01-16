@@ -1,5 +1,7 @@
 package mschapv2
 
+import "github.com/pkg/errors"
+
 // GenerateNTResponse is defined https://tools.ietf.org/html/rfc2759#section-8.1
 //
 //    GenerateNTResponse(
@@ -19,17 +21,16 @@ package mschapv2
 //       ChallengeResponse( Challenge, PasswordHash, giving Response )
 //    }
 //
-func (s *MSCHAPv2) GenerateNTResponse(AuthenticatorChallenge, PeerChallenge, UserName, Password, Response []byte) error {
+func (s *MSCHAPv2) GenerateNTResponse(AuthenticatorChallenge, PeerChallenge, UserName, Password, Response []byte) {
+	if s.Err != nil {
+		return
+	}
 	Challenge := make([]byte, 8)
 	PasswordHash := make([]byte, 16)
 
-	if err := s.ChallengeHash(PeerChallenge[:16], AuthenticatorChallenge[:16], UserName, Challenge); err != nil {
-		return err
-	}
+	s.ChallengeHash(PeerChallenge[:16], AuthenticatorChallenge[:16], UserName, Challenge)
+	s.NtPasswordHash(Password, PasswordHash)
+	s.ChallengeResponse(Challenge, PasswordHash, Response)
 
-	if err := s.NtPasswordHash(Password, PasswordHash); err != nil {
-		return err
-	}
-
-	return s.ChallengeResponse(Challenge, PasswordHash, Response)
+	s.Err = errors.Wrap(s.Err, "GenerateNTResponse")
 }

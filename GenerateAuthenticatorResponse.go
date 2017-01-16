@@ -3,6 +3,8 @@ package mschapv2
 import (
 	"encoding/hex"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // GenerateAuthenticatorResponse is defined https://tools.ietf.org/html/rfc2759#section-8.7
@@ -73,42 +75,35 @@ import (
 //
 //    }
 //
-func (s *MSCHAPv2) GenerateAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, AuthenticatorResponse []byte) error {
+func (s *MSCHAPv2) GenerateAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, AuthenticatorResponse []byte) {
+	if s.Err != nil {
+		return
+	}
 	PasswordHash := make([]byte, 16)
 	PasswordHashHash := make([]byte, 16)
 	Digest := make([]byte, 20)
 	Challenge := make([]byte, 8)
 
-	if err := s.NtPasswordHash(Password, PasswordHash); err != nil {
-		return err
-	}
-
-	if err := s.HashNtPasswordHash(PasswordHash, PasswordHashHash); err != nil {
-		return err
-	}
+	s.NtPasswordHash(Password, PasswordHash)
+	s.HashNtPasswordHash(PasswordHash, PasswordHashHash)
 
 	s.sha1reset()
 	s.sha1write(PasswordHashHash)
 	s.sha1write(NtResponse[:24])
 	s.sha1write(magic1)
-	if err := s.sha1finish(Digest); err != nil {
-		return err
-	}
+	s.sha1finish(Digest)
 
-	if err := s.ChallengeHash(PeerChallenge, AuthenticatorChallenge, UserName, Challenge); err != nil {
-		return err
-	}
+	s.ChallengeHash(PeerChallenge, AuthenticatorChallenge, UserName, Challenge)
 
 	s.sha1reset()
 	s.sha1write(Digest)
 	s.sha1write(Challenge)
 	s.sha1write(magic2)
-	if err := s.sha1finish(Digest); err != nil {
-		return err
-	}
+	s.sha1finish(Digest)
 
 	copy(AuthenticatorResponse, []byte(strings.ToUpper("S="+hex.EncodeToString(Digest))))
-	return nil
+
+	s.Err = errors.Wrap(s.Err, "GenerateAuthenticatorResponse")
 }
 
 var (

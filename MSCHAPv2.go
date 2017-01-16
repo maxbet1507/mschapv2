@@ -5,55 +5,71 @@ import (
 	"encoding/binary"
 	"hash"
 
+	"github.com/pkg/errors"
+
 	"golang.org/x/crypto/md4"
 )
 
 // MSCHAPv2 contains hash.Hash instances.
 type MSCHAPv2 struct {
-	md4     hash.Hash
-	md4err  error
-	sha1    hash.Hash
-	sha1err error
+	Err  error
+	md4  hash.Hash
+	sha1 hash.Hash
 }
 
 func (s *MSCHAPv2) md4reset() {
-	s.md4err = nil
+	if s.Err != nil {
+		return
+	}
+
 	s.md4.Reset()
 }
 
 func (s *MSCHAPv2) md4write(v []byte) {
-	if s.md4err != nil {
+	if s.Err != nil {
 		return
 	}
 
-	s.md4err = binary.Write(s.md4, binary.BigEndian, v)
+	s.Err = binary.Write(s.md4, binary.BigEndian, v)
+	s.Err = errors.Wrap(s.Err, "md4.Write")
 }
 
-func (s *MSCHAPv2) md4finish(v []byte) error {
-	if s.md4err == nil {
-		copy(v, s.md4.Sum(nil))
+func (s *MSCHAPv2) md4finish(v []byte) {
+	if s.Err != nil {
+		return
 	}
-	return s.md4err
+
+	copy(v, s.md4.Sum(nil))
 }
 
 func (s *MSCHAPv2) sha1reset() {
-	s.sha1err = nil
+	if s.Err != nil {
+		return
+	}
+
 	s.sha1.Reset()
 }
 
 func (s *MSCHAPv2) sha1write(v []byte) {
-	if s.sha1err != nil {
+	if s.Err != nil {
 		return
 	}
 
-	s.sha1err = binary.Write(s.sha1, binary.BigEndian, v)
+	s.Err = binary.Write(s.sha1, binary.BigEndian, v)
+	s.Err = errors.Wrap(s.Err, "sha1.Write")
 }
 
-func (s *MSCHAPv2) sha1finish(v []byte) error {
-	if s.sha1err == nil {
-		copy(v, s.sha1.Sum(nil))
+func (s *MSCHAPv2) sha1finish(v []byte) {
+	if s.Err != nil {
+		return
 	}
-	return s.sha1err
+
+	copy(v, s.sha1.Sum(nil))
+}
+
+// Reset sets Err = nil
+func (s *MSCHAPv2) Reset() {
+	s.Err = nil
 }
 
 // New returns an initialized MSCHAPv2.

@@ -30,8 +30,8 @@ func TestGenerateAuthenticatorResponse(t *testing.T) {
 	m := New()
 	ret := make([]byte, 42)
 
-	if err := m.GenerateAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, ret); err != nil {
-		t.Fatal(err)
+	if m.GenerateAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, ret); m.Err != nil {
+		t.Fatal(m.Err)
 	}
 	if !reflect.DeepEqual(ret, AuthenticatorResponse) {
 		t.Fatal(string(ret), string(AuthenticatorResponse))

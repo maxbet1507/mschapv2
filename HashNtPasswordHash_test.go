@@ -18,8 +18,8 @@ func TestHashNtPasswordHash(t *testing.T) {
 	m := New()
 	ret := make([]byte, 16)
 
-	if err := m.HashNtPasswordHash(PasswordHash, ret); err != nil {
-		t.Fatal(err)
+	if m.HashNtPasswordHash(PasswordHash, ret); m.Err != nil {
+		t.Fatal(m.Err)
 	}
 	if !reflect.DeepEqual(ret, PasswordHashHash) {
 		t.Fatal(hex.EncodeToString(ret), hex.EncodeToString(PasswordHashHash))

@@ -22,8 +22,8 @@ func TestChallengeHash(t *testing.T) {
 	m := New()
 	ret := make([]byte, 8)
 
-	if err := m.ChallengeHash(PeerChallenge, AuthenticatorChallenge, UserName, ret); err != nil {
-		t.Fatal(err)
+	if m.ChallengeHash(PeerChallenge, AuthenticatorChallenge, UserName, ret); m.Err != nil {
+		t.Fatal(m.Err)
 	}
 	if !reflect.DeepEqual(ret, Challege) {
 		t.Fatal(hex.EncodeToString(ret), hex.EncodeToString(Challege))

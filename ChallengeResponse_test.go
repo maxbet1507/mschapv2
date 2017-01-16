@@ -21,8 +21,8 @@ func TestChallengeResponse(t *testing.T) {
 	m := New()
 	ret := make([]byte, 24)
 
-	if err := m.ChallengeResponse(Challege, PasswordHash, ret); err != nil {
-		t.Fatal(err)
+	if m.ChallengeResponse(Challege, PasswordHash, ret); m.Err != nil {
+		t.Fatal(m.Err)
 	}
 	if !reflect.DeepEqual(ret, NtResponse) {
 		t.Fatal(hex.EncodeToString(ret), hex.EncodeToString(NtResponse))

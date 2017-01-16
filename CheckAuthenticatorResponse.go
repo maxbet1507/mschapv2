@@ -1,7 +1,10 @@
 package mschapv2
 
-import "errors"
-import "reflect"
+import (
+	"reflect"
+
+	"github.com/pkg/errors"
+)
 
 // CheckAuthenticatorResponse is defined https://tools.ietf.org/html/rfc2759#section-8.8
 //
@@ -26,20 +29,14 @@ import "reflect"
 //       return ResponseOK
 //    }
 //
-func (s *MSCHAPv2) CheckAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, ReceivedResponse []byte) error {
+func (s *MSCHAPv2) CheckAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, ReceivedResponse []byte) bool {
+	if s.Err != nil {
+		return false
+	}
 	MyResponse := make([]byte, 42)
 
-	if err := s.GenerateAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, MyResponse); err != nil {
-		return err
-	}
+	s.GenerateAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, MyResponse)
 
-	if !reflect.DeepEqual(MyResponse, ReceivedResponse) {
-		return ErrInvalidReceivedResponse
-	}
-	return nil
+	s.Err = errors.Wrap(s.Err, "CheckAuthenticatorResponse")
+	return reflect.DeepEqual(MyResponse, ReceivedResponse)
 }
-
-var (
-	// ErrInvalidReceivedResponse means that ReceivedResponse and GenerateAuthenticatorResponse are different.
-	ErrInvalidReceivedResponse = errors.New("invalid ReceivedResponse")
-)

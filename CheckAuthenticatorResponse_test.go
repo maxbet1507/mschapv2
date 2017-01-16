@@ -28,7 +28,7 @@ func TestCheckAuthenticatorResponse(t *testing.T) {
 
 	m := New()
 
-	if err := m.CheckAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, AuthenticatorResponse); err != nil {
-		t.Fatal(err)
+	if m.CheckAuthenticatorResponse(Password, NtResponse, PeerChallenge, AuthenticatorChallenge, UserName, AuthenticatorResponse); m.Err != nil {
+		t.Fatal(m.Err)
 	}
 }

@@ -27,8 +27,8 @@ func TestGenerateNTResponse(t *testing.T) {
 	m := New()
 	ret := make([]byte, 24)
 
-	if err := m.GenerateNTResponse(AuthenticatorChallenge, PeerChallenge, UserName, Password, ret); err != nil {
-		t.Fatal(err)
+	if m.GenerateNTResponse(AuthenticatorChallenge, PeerChallenge, UserName, Password, ret); m.Err != nil {
+		t.Fatal(m.Err)
 	}
 	if !reflect.DeepEqual(ret, NtResponse) {
 		t.Fatal(hex.EncodeToString(ret), hex.EncodeToString(NtResponse))

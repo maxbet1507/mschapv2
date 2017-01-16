@@ -1,5 +1,7 @@
 package mschapv2
 
+import "github.com/pkg/errors"
+
 // HashNtPasswordHash is defined https://tools.ietf.org/html/rfc2759#section-8.4
 //
 //    HashNtPasswordHash(
@@ -12,8 +14,14 @@ package mschapv2
 //        */
 //    }
 //
-func (s *MSCHAPv2) HashNtPasswordHash(PasswordHash, PasswordHashHash []byte) error {
+func (s *MSCHAPv2) HashNtPasswordHash(PasswordHash, PasswordHashHash []byte) {
+	if s.Err != nil {
+		return
+	}
+
 	s.md4reset()
 	s.md4write(PasswordHash[:16])
-	return s.md4finish(PasswordHashHash)
+	s.md4finish(PasswordHashHash)
+
+	s.Err = errors.Wrap(s.Err, "HashNtPasswordHash")
 }

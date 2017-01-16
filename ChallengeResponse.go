@@ -1,5 +1,7 @@
 package mschapv2
 
+import "github.com/pkg/errors"
+
 // ChallengeResponse is defined https://tools.ietf.org/html/rfc2759#section-8.5
 //
 //    ChallengeResponse(
@@ -22,27 +24,24 @@ package mschapv2
 //                   giving 3rd 8-octets of Response )
 //    }
 //
-func (s *MSCHAPv2) ChallengeResponse(Challenge, PasswordHash, Response []byte) error {
+func (s *MSCHAPv2) ChallengeResponse(Challenge, PasswordHash, Response []byte) {
+	if s.Err != nil {
+		return
+	}
 	ZPassword := append(PasswordHash[:16], 0x00, 0x00, 0x00, 0x00, 0x00)
 
 	response1 := make([]byte, 8)
-	if err := DesEncrypt(Challenge[:8], ZPassword[0:7], response1); err != nil {
-		return err
-	}
+	s.DesEncrypt(Challenge[:8], ZPassword[0:7], response1)
 
 	response2 := make([]byte, 8)
-	if err := DesEncrypt(Challenge[:8], ZPassword[7:14], response2); err != nil {
-		return err
-	}
+	s.DesEncrypt(Challenge[:8], ZPassword[7:14], response2)
 
 	response3 := make([]byte, 8)
-	if err := DesEncrypt(Challenge[:8], ZPassword[14:21], response3); err != nil {
-		return err
-	}
+	s.DesEncrypt(Challenge[:8], ZPassword[14:21], response3)
 
 	response := append(response1, response2...)
 	response = append(response, response3...)
 	copy(Response, response)
 
-	return nil
+	s.Err = errors.Wrap(s.Err, "ChallengeResponse")
 }

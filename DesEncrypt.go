@@ -76,14 +76,14 @@ func makeDesParityKey(key []byte) []byte {
 //        * yourself.
 //        */
 //    }
-func DesEncrypt(clear, key []byte) ([]byte, error) {
-	cb, err := des.NewCipher(makeDesParityKey(key))
+//
+func DesEncrypt(Clear, Key, Cypher []byte) error {
+	cb, err := des.NewCipher(makeDesParityKey(Key[:7]))
 	if err != nil {
-		return nil, errors.Wrap(err, "DesEncrypt")
+		return errors.Wrap(err, "DesEncrypt")
 	}
 
-	out := make([]byte, des.BlockSize)
-	cb.Encrypt(out, clear)
+	cb.Encrypt(Cypher, Clear[:8])
 
-	return out, nil
+	return nil
 }
